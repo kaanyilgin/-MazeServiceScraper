@@ -1,0 +1,43 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.30621.155
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MazeServiceScraper.Web", "MazeServiceScraper.Web\MazeServiceScraper.Web.csproj", "{D6671978-1C05-468E-A409-2485C284FC65}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MazeServiceScraper.Infrastructure", "MazeServiceScraper.Infrastructure\MazeServiceScraper.Infrastructure.csproj", "{1A15D9F4-130B-476B-8B91-606E2905FB94}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MazeServiceScraper.Application", "MazeServiceScraper.Application\MazeServiceScraper.Application.csproj", "{8AEAC436-C38A-40A5-937F-418D964907B1}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MazeServiceScraper.Domain", "MazeServiceScraper.Domain\MazeServiceScraper.Domain.csproj", "{FE3DF711-DAB5-4FD6-BAC4-9B812EF9EDD8}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{D6671978-1C05-468E-A409-2485C284FC65}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D6671978-1C05-468E-A409-2485C284FC65}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D6671978-1C05-468E-A409-2485C284FC65}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D6671978-1C05-468E-A409-2485C284FC65}.Release|Any CPU.Build.0 = Release|Any CPU
+		{1A15D9F4-130B-476B-8B91-606E2905FB94}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1A15D9F4-130B-476B-8B91-606E2905FB94}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1A15D9F4-130B-476B-8B91-606E2905FB94}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1A15D9F4-130B-476B-8B91-606E2905FB94}.Release|Any CPU.Build.0 = Release|Any CPU
+		{8AEAC436-C38A-40A5-937F-418D964907B1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8AEAC436-C38A-40A5-937F-418D964907B1}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8AEAC436-C38A-40A5-937F-418D964907B1}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8AEAC436-C38A-40A5-937F-418D964907B1}.Release|Any CPU.Build.0 = Release|Any CPU
+		{FE3DF711-DAB5-4FD6-BAC4-9B812EF9EDD8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{FE3DF711-DAB5-4FD6-BAC4-9B812EF9EDD8}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{FE3DF711-DAB5-4FD6-BAC4-9B812EF9EDD8}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{FE3DF711-DAB5-4FD6-BAC4-9B812EF9EDD8}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {E81B40C5-69A5-422D-BF90-49821D470EEC}
+	EndGlobalSection
+EndGlobal
