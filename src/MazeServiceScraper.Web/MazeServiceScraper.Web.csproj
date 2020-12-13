@@ -13,4 +13,10 @@
     <PackageReference Include="Microsoft.AspNetCore.Razor.Design" Version="2.1.2" PrivateAssets="All" />
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\MazeServiceScraper.Application\MazeServiceScraper.Application.csproj" />
+    <ProjectReference Include="..\MazeServiceScraper.Config\MazeServiceScraper.Config.csproj" />
+    <ProjectReference Include="..\MazeServiceScraper.Domain\MazeServiceScraper.Domain.csproj" />
+  </ItemGroup>
+
 </Project>
