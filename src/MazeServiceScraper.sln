@@ -11,6 +11,10 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MazeServiceScraper.Applicat
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MazeServiceScraper.Domain", "MazeServiceScraper.Domain\MazeServiceScraper.Domain.csproj", "{FE3DF711-DAB5-4FD6-BAC4-9B812EF9EDD8}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "test", "test", "{A9D50962-1454-4BE6-BA89-4AF9FB4238C3}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MazeServiceScraper.Application.UnitTest", "MazeServiceScraper.Application.UnitTest\MazeServiceScraper.Application.UnitTest.csproj", "{8EFFEFBB-7284-4AC6-BE16-7C6524CF55D3}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -33,9 +37,16 @@ Global
 		{FE3DF711-DAB5-4FD6-BAC4-9B812EF9EDD8}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{FE3DF711-DAB5-4FD6-BAC4-9B812EF9EDD8}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{FE3DF711-DAB5-4FD6-BAC4-9B812EF9EDD8}.Release|Any CPU.Build.0 = Release|Any CPU
+		{8EFFEFBB-7284-4AC6-BE16-7C6524CF55D3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8EFFEFBB-7284-4AC6-BE16-7C6524CF55D3}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8EFFEFBB-7284-4AC6-BE16-7C6524CF55D3}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8EFFEFBB-7284-4AC6-BE16-7C6524CF55D3}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{8EFFEFBB-7284-4AC6-BE16-7C6524CF55D3} = {A9D50962-1454-4BE6-BA89-4AF9FB4238C3}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {E81B40C5-69A5-422D-BF90-49821D470EEC}
