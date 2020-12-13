@@ -15,6 +15,10 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "test", "test", "{A9D50962-1
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MazeServiceScraper.Application.UnitTest", "MazeServiceScraper.Application.UnitTest\MazeServiceScraper.Application.UnitTest.csproj", "{8EFFEFBB-7284-4AC6-BE16-7C6524CF55D3}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MazeServiceScraper.Application.IntegrationTest", "MazeServiceScraper.Application.IntegrationTest\MazeServiceScraper.Application.IntegrationTest.csproj", "{8D3B1B57-7F53-44B1-AC6C-F6934A68DD87}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MazeServiceScraper.Config", "MazeServiceScraper.Config\MazeServiceScraper.Config.csproj", "{0E94C95F-A4A7-4609-BD7F-CDD9159CD68A}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -41,12 +45,21 @@ Global
 		{8EFFEFBB-7284-4AC6-BE16-7C6524CF55D3}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{8EFFEFBB-7284-4AC6-BE16-7C6524CF55D3}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{8EFFEFBB-7284-4AC6-BE16-7C6524CF55D3}.Release|Any CPU.Build.0 = Release|Any CPU
+		{8D3B1B57-7F53-44B1-AC6C-F6934A68DD87}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8D3B1B57-7F53-44B1-AC6C-F6934A68DD87}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8D3B1B57-7F53-44B1-AC6C-F6934A68DD87}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8D3B1B57-7F53-44B1-AC6C-F6934A68DD87}.Release|Any CPU.Build.0 = Release|Any CPU
+		{0E94C95F-A4A7-4609-BD7F-CDD9159CD68A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0E94C95F-A4A7-4609-BD7F-CDD9159CD68A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0E94C95F-A4A7-4609-BD7F-CDD9159CD68A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0E94C95F-A4A7-4609-BD7F-CDD9159CD68A}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
 		{8EFFEFBB-7284-4AC6-BE16-7C6524CF55D3} = {A9D50962-1454-4BE6-BA89-4AF9FB4238C3}
+		{8D3B1B57-7F53-44B1-AC6C-F6934A68DD87} = {A9D50962-1454-4BE6-BA89-4AF9FB4238C3}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {E81B40C5-69A5-422D-BF90-49821D470EEC}

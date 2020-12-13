@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Threading.Tasks;
 using MazeServiceScraper.Application.Show;
 using MazeServiceScraper.Infrastructure.MazeWebService;
 using NSubstitute;
@@ -22,9 +23,8 @@ namespace MazeServiceScraper.Application.UnitTest
 			_sut = new ShowApplication(_mazeService);
 		}
 
-
 		[Test]
-		public void TestCastsOfShowOrderedByBirthday()
+		public async Task TestCastsOfShowOrderedByBirthday()
 		{
 			_mazeService.GetShows().Returns(new List<Infrastructure.MazeWebService.Show>()
 			{
@@ -73,7 +73,7 @@ namespace MazeServiceScraper.Application.UnitTest
 				}
 			});
 
-			IList<Domain.ShowDomain.Show> shows = _sut.GetShowAndCastDetails();
+			IList<Domain.ShowDomain.Show> shows = await _sut.GetShowAndCastDetails();
 
 			Assert.That(shows, Is.Not.Null);
 			var casts = shows[0].Casts;
