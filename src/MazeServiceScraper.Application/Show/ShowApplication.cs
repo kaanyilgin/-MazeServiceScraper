@@ -16,14 +16,14 @@ namespace MazeServiceScraper.Application.Show
 			_mazeService = mazeService;
 		}
 
-		public async Task<IList<Domain.ShowDomain.Show>> GetShowAndCastDetails()
+		public async Task<IList<Domain.ShowDomain.Show>> GetShowAsync()
 		{
-			var shows = await _mazeService.GetShows();
+			var shows = await _mazeService.GetShowsAsync();
 			var domainShows = new List<Domain.ShowDomain.Show>();
 
 			foreach (var show in shows)
 			{
-				var casts = await _mazeService.GetCastOfAShow(show.id);
+				var casts = await _mazeService.GetCastOfAShowAsync(show.id);
 				var domainCasts = casts.Select(x =>
 					{
 						var birthday = x.person.birthday != null
@@ -40,8 +40,8 @@ namespace MazeServiceScraper.Application.Show
 		}
 	}
 
-	internal interface IShowApplication
+	public interface IShowApplication
 	{
-		Task<IList<Domain.ShowDomain.Show>> GetShowAndCastDetails();
+		Task<IList<Domain.ShowDomain.Show>> GetShowAsync();
 	}
 }

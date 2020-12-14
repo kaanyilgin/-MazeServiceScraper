@@ -26,7 +26,7 @@ namespace MazeServiceScraper.Application.UnitTest
 		[Test]
 		public async Task TestCastsOfShowOrderedByBirthday()
 		{
-			_mazeService.GetShows().Returns(new List<Infrastructure.MazeWebService.Show>()
+			_mazeService.GetShowsAsync().Returns(new List<Infrastructure.MazeWebService.Show>()
 			{
 				new Infrastructure.MazeWebService.Show()
 				{
@@ -39,7 +39,7 @@ namespace MazeServiceScraper.Application.UnitTest
 					name = "Big Bang Theort"
 				}
 			});
-			_mazeService.GetCastOfAShow(1).Returns(new List<Infrastructure.MazeWebService.Cast>()
+			_mazeService.GetCastOfAShowAsync(1).Returns(new List<Infrastructure.MazeWebService.Cast>()
 			{
 				new Cast()
 				{
@@ -60,7 +60,7 @@ namespace MazeServiceScraper.Application.UnitTest
 					}
 				}
 			});
-			_mazeService.GetCastOfAShow(4).Returns(new List<Infrastructure.MazeWebService.Cast>()
+			_mazeService.GetCastOfAShowAsync(4).Returns(new List<Infrastructure.MazeWebService.Cast>()
 			{
 				new Cast()
 				{
@@ -73,7 +73,7 @@ namespace MazeServiceScraper.Application.UnitTest
 				}
 			});
 
-			IList<Domain.ShowDomain.Show> shows = await _sut.GetShowAndCastDetails();
+			IList<Domain.ShowDomain.Show> shows = await _sut.GetShowAsync();
 
 			Assert.That(shows, Is.Not.Null);
 			var casts = shows[0].Casts;

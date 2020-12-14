@@ -19,6 +19,8 @@ namespace MazeServiceScraper.Application.IntegrationTest
 
 		public void SetUp()
 		{
+			var appSetting = ConfigurationManager.AppSettings["MazeService"];
+
 			var httpClientFactory = Substitute.For<IHttpClientFactory>();
 			httpClientFactory.CreateClient().Returns(new HttpClient());
 			var optionsManager = Substitute.For<IOptions<MazeServiceConfig>>();
@@ -35,7 +37,7 @@ namespace MazeServiceScraper.Application.IntegrationTest
 		[Test]
 		public async Task TestGetAllCasts()
 		{
-			var showAndCastDetails = await _sut.GetShowAndCastDetails();
+			var showAndCastDetails = await _sut.GetShowAsync();
 
 			Assert.That(showAndCastDetails, Is.Not.Null);
 		}
