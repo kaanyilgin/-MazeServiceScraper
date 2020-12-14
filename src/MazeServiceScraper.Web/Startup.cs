@@ -43,7 +43,7 @@ namespace MazeServiceScraper.Web
 				new ShowApplication(provider.GetRequiredService<IMazeService>())
 				));
 			services.AddScoped<IShowApplication>(provider =>
-				new PaginatedShowApplication(provider.GetRequiredService<CachedShowApplication>()));
+				new FilteringShowApplication(provider.GetRequiredService<CachedShowApplication>()));
 
 			services.AddSwaggerGen();
 		}

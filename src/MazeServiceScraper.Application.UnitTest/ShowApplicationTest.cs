@@ -164,42 +164,59 @@ namespace MazeServiceScraper.Application.UnitTest
 	[TestFixture]
 	public class PaginatedShowApplicationTest
 	{
-		private PaginatedShowApplication _sut;
+		private FilteringShowApplication _sut;
 		private IShowApplication _decorated;
+		private GetShowRequest _getShowRequest;
 
 		[SetUp]
 		public void SetUp()
 		{
-			_decorated = Substitute.For<IShowApplication>();
-			_sut = new PaginatedShowApplication(_decorated);
-		}
-
-		[Test]
-		public async Task TestGetShowAsyncShouldPaginatedAndOrderedByBirthday()
-		{
-			var getShowRequest = new GetShowRequest()
+			_getShowRequest = new GetShowRequest()
 			{
 				PageNumber = 1,
 				PageSize = 10
 			};
+			_decorated = Substitute.For<IShowApplication>();
+			_sut = new FilteringShowApplication(_decorated);
+		}
 
+		[Test]
+		public async Task TestGetShowAsyncPaginateAllShowsIfThereIsNoFilteringAndOrderByDescBirthday()
+		{
+			MockDecoratedService();
+
+			var shows = await _sut.GetShowAsync(_getShowRequest);
+
+			var firstShowsCast = shows.FirstOrDefault().Casts.FirstOrDefault();
+			Assert.That(shows, Has.Count.EqualTo(_getShowRequest.PageSize));
+			Assert.That(firstShowsCast.Id, Is.EqualTo(2), "Cast is not ordered by birthday");
+		}
+
+		[Test]
+		public async Task TestGetShowFilterShowsById()
+		{
+			_getShowRequest.ShowsIds = new List<int>() { 1 };
+			MockDecoratedService();
+
+			var shows = await _sut.GetShowAsync(_getShowRequest);
+
+			Assert.That(shows, Has.Count.EqualTo(1));
+			Assert.That(shows.FirstOrDefault().Id, Is.EqualTo(1));
+		}
+
+		private void MockDecoratedService()
+		{
 			var response = new List<Domain.ShowDomain.Show>();
 			for (int i = 0; i < 20; i++)
 			{
 				response.Add(new Domain.ShowDomain.Show(i, $"Show: {i}", new List<Domain.ShowDomain.Cast>()
 				{
-					new Domain.ShowDomain.Cast(1, "Older Cast", new DateTime(1970,12,12)),
-					new Domain.ShowDomain.Cast(2, "Younger Cast", new DateTime(2000,12,12))
+					new Domain.ShowDomain.Cast(1, "Older Cast", new DateTime(1970, 12, 12)),
+					new Domain.ShowDomain.Cast(2, "Younger Cast", new DateTime(2000, 12, 12))
 				}));
 			}
 
-			_decorated.GetShowAsync(getShowRequest).Returns(response);
-
-			var shows = await _sut.GetShowAsync(getShowRequest);
-			var firstShowsCast = shows.FirstOrDefault().Casts.FirstOrDefault();
-
-			Assert.That(shows, Has.Count.EqualTo(10));
-			Assert.That(firstShowsCast.Id, Is.EqualTo(2), "Cast is not ordered by birthday");
+			_decorated.GetShowAsync(_getShowRequest).Returns(response);
 		}
 	}
 }
