@@ -3,7 +3,6 @@ using System.Threading.Tasks;
 using MazeServiceScraper.Application.Show;
 using MazeServiceScraper.Application.Show.Model;
 using MazeServiceScraper.Domain.ShowDomain;
-using MazeServiceScraper.Web.Model;
 using Microsoft.AspNetCore.Mvc;
 
 namespace MazeServiceScraper.Web.Controllers
@@ -23,6 +22,6 @@ namespace MazeServiceScraper.Web.Controllers
 		public async Task<IList<Show>> Get([FromQuery] GetShowRequest request)
 		{
 			return await _showApplication.GetShowAsync(request);
+		}
 	}
-}
 }

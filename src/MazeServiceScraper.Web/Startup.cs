@@ -38,10 +38,12 @@ namespace MazeServiceScraper.Web
 			services.AddDbContext<MazeDbContext>(options => options.UseSqlServer(Configuration.GetConnectionString("MazeConnectionString")));
 
 			services.AddScoped<ShowApplication>();
-			services.AddScoped<IShowApplication>(provider => new CachedShowApplication(provider.GetRequiredService<IShowRepository>(),
+			services.AddScoped<CachedShowApplication>(provider => new CachedShowApplication(provider.GetRequiredService<IShowRepository>(),
 				provider.GetRequiredService<IOptions<MazeCacheConfig>>(),
 				new ShowApplication(provider.GetRequiredService<IMazeService>())
 				));
+			services.AddScoped<IShowApplication>(provider =>
+				new PaginatedShowApplication(provider.GetRequiredService<CachedShowApplication>()));
 		}
 
 		// This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
