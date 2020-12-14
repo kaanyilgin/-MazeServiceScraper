@@ -10,6 +10,8 @@ using MazeServiceScraper.Infrastructure.MazeWebService;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
 using NSubstitute;
+using NSubstitute.Core.Arguments;
+using NSubstitute.ReceivedExtensions;
 using NUnit.Framework;
 using Cast = MazeServiceScraper.Infrastructure.MazeWebService.Cast;
 
@@ -24,13 +26,8 @@ namespace MazeServiceScraper.Application.UnitTest
 		[SetUp]
 		public void SetUp()
 		{
-			var options = new DbContextOptionsBuilder<MazeDbContext>()
-				.UseInMemoryDatabase(databaseName: "UnitTesting")
-				.Options;
-			var mazeDbContext = new MazeDbContext(options);
 			_mazeService = Substitute.For<IMazeService>();
-			var mazeCacheConfig = Substitute.For<IOptions<MazeCacheConfig>>();
-			_sut = new ShowApplication(_mazeService, mazeDbContext, mazeCacheConfig);
+			_sut = new ShowApplication(_mazeService);
 		}
 
 		[Test]
@@ -44,42 +41,6 @@ namespace MazeServiceScraper.Application.UnitTest
 			Assert.That(shows, Is.Not.Null);
 			var casts = shows[0].Casts;
 			Assert.That(casts.First().Id, Is.EqualTo(7), "Casts are not ordered by birthday");
-		}
-
-		[Test]
-		public async Task TestDataPersisInDb()
-		{
-			MockGetShowsAsync();
-			MockGetCasOfShowAsync();
-
-			IList<Domain.ShowDomain.Show> shows = await _sut.GetShowAsync();
-
-			int castCount = 0;
-
-			foreach (var show in shows)
-			{
-				castCount += show.Casts.Count();
-			}
-
-			Assert.That(castCount, Is.EqualTo(castCount));
-		}
-
-		[Test]
-		public async Task TestDataRetrieveFromCache()
-		{
-			MockGetShowsAsync();
-			MockGetCasOfShowAsync();
-
-			// Get value from cache
-
-			var showAndCastDetails = await _sut.GetShowAsync();
-
-			MockGetShowsAsync(true);
-			MockGetCasOfShowAsync(true);
-
-			showAndCastDetails = await _sut.GetShowAsync();
-
-			Assert.That(showAndCastDetails.FirstOrDefault().Id, Is.EqualTo(1), "Value is not retrieved from cache");
 		}
 
 		private void MockGetCasOfShowAsync(bool changeId = false)
@@ -134,6 +95,66 @@ namespace MazeServiceScraper.Application.UnitTest
 					name = "Big Bang Theort"
 				}
 			});
+		}
+	}
+
+	[TestFixture]
+	public class CachedShowApplicationTest
+	{
+		private CachedShowApplication _sut;
+		private IShowApplication _decorated;
+		private IShowRepository _showRepository;
+		private List<Domain.ShowDomain.Show> _decoratedShows;
+		private IOptions<MazeCacheConfig> _mazeCacheConfig;
+
+		[SetUp]
+		public void SetUp()
+		{
+			_mazeCacheConfig = Substitute.For<IOptions<MazeCacheConfig>>();
+			_mazeCacheConfig.Value.Returns(new MazeCacheConfig() {DbCacheSecond = 60});
+			_showRepository = Substitute.For<IShowRepository>();
+			_decorated = Substitute.For<IShowApplication>();
+			_sut = new CachedShowApplication(_showRepository, _mazeCacheConfig, _decorated);
+			
+			_decoratedShows = new List<Domain.ShowDomain.Show>();
+			_decorated.GetShowAsync().Returns(_decoratedShows);
+		}
+
+		[Test]
+		public async Task TestDataPersisInDb()
+		{
+			_decoratedShows.Add(new Domain.ShowDomain.Show(1, "Tv show", new List<Domain.ShowDomain.Cast>()));
+			
+			await _sut.GetShowAsync();
+
+			_showRepository.Received(1).AddShows(Arg.Any<IList<Infrastructure.Database.Show>>());
+		}
+
+		private void MockDecoratedGetShowAsync()
+		{
+			_decorated.GetShowAsync().Returns(_decoratedShows);
+		}
+
+		[Test]
+		public async Task TestDataRetrieveFromCache()
+		{
+			_showRepository.GetShowsCreatedBeforeSecond(_mazeCacheConfig.Value.DbCacheSecond).Returns(
+				new List<Infrastructure.Database.Show>()
+				{
+					new Infrastructure.Database.Show()
+					{
+						CreatedTime = DateTime.Now.AddSeconds(-1),
+						ShowId = 1,
+						Name = "The good show",
+						Casts = new List<Infrastructure.Database.Cast>()
+					}
+				}); 
+			_decoratedShows.Add(new Domain.ShowDomain.Show(2, "Tv show", new List<Domain.ShowDomain.Cast>()));
+
+			// Get value from cache
+			var showAndCastDetails = await _sut.GetShowAsync();
+
+			Assert.That(showAndCastDetails.FirstOrDefault().Id, Is.EqualTo(1), "Value is not retrieved from cache");
 		}
 	}
 }

@@ -8,6 +8,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Options;
 
 namespace MazeServiceScraper.Web
 {
@@ -26,14 +27,21 @@ namespace MazeServiceScraper.Web
 			services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
 			services.AddHttpClient();
 
-			services.AddSingleton<IShowApplication, ShowApplication>();
 			services.AddSingleton<IMazeService, MazeService>();
+			services.AddScoped<IShowRepository, ShowRepository>();
 
 			services.AddOptions();
 
 			services.Configure<MazeServiceConfig>(Configuration.GetSection("MazeService"));
+			services.Configure<MazeCacheConfig>(Configuration.GetSection("MazeCacheConfig"));
 
 			services.AddDbContext<MazeDbContext>(options => options.UseSqlServer(Configuration.GetConnectionString("MazeConnectionString")));
+
+			services.AddScoped<ShowApplication>();
+			services.AddScoped<IShowApplication>(provider => new CachedShowApplication(provider.GetRequiredService<IShowRepository>(),
+				provider.GetRequiredService<IOptions<MazeCacheConfig>>(),
+				new ShowApplication(provider.GetRequiredService<IMazeService>())
+				));
 		}
 
 		// This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

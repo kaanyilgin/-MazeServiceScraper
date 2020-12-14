@@ -19,26 +19,12 @@ namespace MazeServiceScraper.Application.IntegrationTest
 	public class ShowApplicationTest
 	{
 		private ShowApplication _sut;
-		private MazeDbContext _mazeDbContext;
-		private IOptions<MazeCacheConfig> _mazeCacheConfig;
 
 		[SetUp]
 
 		public void SetUp()
 		{
-			var configuration = GetIConfigurationRoot(TestContext.CurrentContext.TestDirectory);
-			var mazeServiceConfig = configuration.GetSection("MazeService");
-
-			var mazeServiceConfigOption = Options.Create<MazeServiceConfig>(mazeServiceConfig.Get<MazeServiceConfig>());
-			_mazeCacheConfig = Options.Create<MazeCacheConfig>(mazeServiceConfig.Get<MazeCacheConfig>());
-
-			var httpClientFactory = Substitute.For<IHttpClientFactory>();
-			httpClientFactory.CreateClient().Returns(new HttpClient());
-
-			var options = CreateDbContextOptions();
-			var mazeService = new MazeService(httpClientFactory, mazeServiceConfigOption);
-			_mazeDbContext = new MazeDbContext(options);
-			_sut = new ShowApplication(mazeService, _mazeDbContext, _mazeCacheConfig);
+			_sut = TestUtility.CreateShowApplication();
 		}
 
 		[Test]
@@ -48,7 +34,53 @@ namespace MazeServiceScraper.Application.IntegrationTest
 
 			Assert.That(showAndCastDetails, Is.Not.Null);
 		}
+	}
 
+	[TestFixture]
+	public class CachedShowApplicationTest
+	{
+		private IOptions<MazeCacheConfig> _mazeCacheConfig;
+		private MazeDbContext _mazeDbContext;
+		private CachedShowApplication _sut;
+
+		[SetUp]
+		public void SetUp()
+		{
+			_mazeDbContext = TestUtility.GetDbContext();
+			_sut = TestUtility.CreateCachedShowApplication(_mazeDbContext);
+		}
+
+		[Test]
+		public async Task TestDataPersisInDb()
+		{
+			var showAndCastDetails = await _sut.GetShowAsync();
+
+			var dbShowCount = _mazeDbContext.Shows.Count();
+
+			// Check if values inserted in db
+
+			Assert.That(showAndCastDetails.Count, Is.EqualTo(dbShowCount));
+
+			var serviceCastCount = 0;
+
+			foreach (var show in showAndCastDetails)
+			{
+				serviceCastCount += show.Casts.Count;
+			}
+
+			Assert.That(serviceCastCount, Is.EqualTo(_mazeDbContext.Casts.Count()));
+
+			// Check if values are not inserted in db again
+
+			showAndCastDetails = await _sut.GetShowAsync();
+
+			Assert.That(showAndCastDetails.Count, Is.EqualTo(dbShowCount));
+			Assert.That(serviceCastCount, Is.EqualTo(_mazeDbContext.Casts.Count()));
+		}
+	}
+
+	public static class TestUtility
+	{
 		public static IConfigurationRoot GetIConfigurationRoot(string outputPath)
 		{
 			var iConfigurationRoot = new ConfigurationBuilder()
@@ -56,6 +88,34 @@ namespace MazeServiceScraper.Application.IntegrationTest
 				.AddJsonFile("appsettings.json", optional: true)
 				.Build();
 			return iConfigurationRoot;
+		}
+
+		public static ShowApplication CreateShowApplication()
+		{
+			var configuration = TestUtility.GetIConfigurationRoot(TestContext.CurrentContext.TestDirectory);
+			var mazeServiceConfig = configuration.GetSection("MazeService"); var mazeServiceConfigOption = Options.Create<MazeServiceConfig>(mazeServiceConfig.Get<MazeServiceConfig>());
+
+			var httpClientFactory = Substitute.For<IHttpClientFactory>();
+			httpClientFactory.CreateClient().Returns(new HttpClient());
+			var mazeService = new MazeService(httpClientFactory, mazeServiceConfigOption);
+
+			return new ShowApplication(mazeService);
+		}
+
+		public static CachedShowApplication CreateCachedShowApplication(MazeDbContext mazeDbContext)
+		{
+			var configuration = TestUtility.GetIConfigurationRoot(TestContext.CurrentContext.TestDirectory);
+			var mazeCachedServiceConfig = configuration.GetSection("MazeCacheConfig");
+			var mazeCachedServiceConfigOption = Options.Create<MazeCacheConfig>(mazeCachedServiceConfig.Get<MazeCacheConfig>());
+
+			var decorated = CreateShowApplication();
+			var showRepository = new ShowRepository(mazeDbContext);
+			return new CachedShowApplication(showRepository, mazeCachedServiceConfigOption, decorated);
+		}
+
+		public static MazeDbContext GetDbContext()
+		{
+			return new MazeDbContext(CreateDbContextOptions());
 		}
 
 		private static DbContextOptions<MazeDbContext> CreateDbContextOptions()
