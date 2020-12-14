@@ -1,5 +1,4 @@
-﻿
-namespace MazeServiceScraper.Config
+﻿namespace MazeServiceScraper.Config
 {
 	public class MazeCacheConfig
 	{

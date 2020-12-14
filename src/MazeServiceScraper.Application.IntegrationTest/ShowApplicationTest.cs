@@ -1,7 +1,5 @@
-﻿using System.Configuration;
-using System.Linq;
+﻿using System.Linq;
 using System.Net.Http;
-using System.Threading;
 using System.Threading.Tasks;
 using MazeServiceScraper.Application.Show;
 using MazeServiceScraper.Application.Show.Model;

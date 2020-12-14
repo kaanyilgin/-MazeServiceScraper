@@ -1,6 +1,4 @@
-﻿using System.Collections.Generic;
-
-namespace MazeServiceScraper.Infrastructure.MazeWebService
+﻿namespace MazeServiceScraper.Infrastructure.MazeWebService
 {
 	public class Show
 	{

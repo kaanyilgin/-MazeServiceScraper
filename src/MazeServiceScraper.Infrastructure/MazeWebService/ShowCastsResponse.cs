@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace MazeServiceScraper.Infrastructure.MazeWebService
+﻿namespace MazeServiceScraper.Infrastructure.MazeWebService
 {
 	public class Person
 	{

@@ -1,18 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 using MazeServiceScraper.Application.Show;
 using MazeServiceScraper.Application.Show.Model;
 using MazeServiceScraper.Config;
 using MazeServiceScraper.Infrastructure.Database;
 using MazeServiceScraper.Infrastructure.MazeWebService;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
 using NSubstitute;
-using NSubstitute.Core.Arguments;
-using NSubstitute.ReceivedExtensions;
 using NUnit.Framework;
 using Cast = MazeServiceScraper.Infrastructure.MazeWebService.Cast;
 

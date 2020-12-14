@@ -12,8 +12,6 @@ namespace MazeServiceScraper.Infrastructure.Database
 
 		public string Name { get; set; }
 
-		public DateTime Birthday { get; set; }
-
-		
+		public DateTime Birthday { get; set; }	
 	}
 }

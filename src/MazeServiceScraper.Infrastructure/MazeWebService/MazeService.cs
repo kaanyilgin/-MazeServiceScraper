@@ -45,10 +45,4 @@ namespace MazeServiceScraper.Infrastructure.MazeWebService
 			return JsonConvert.DeserializeObject<List<MazeServiceScraper.Infrastructure.MazeWebService.Cast>>(showsCastsResult);
 		}
 	}
-
-	public interface IMazeService
-	{
-		Task<List<Show>> GetShowsAsync();
-		Task<List<Cast>> GetCastOfAShowAsync(int showId);
-	}
 }

@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using Microsoft.EntityFrameworkCore;
 
 namespace MazeServiceScraper.Infrastructure.Database
@@ -27,12 +26,5 @@ namespace MazeServiceScraper.Infrastructure.Database
 			_context.Shows.AddRange(shows);
 			_context.SaveChanges();
 		}
-	}
-
-	public interface IShowRepository
-	{
-		IList<Show> GetShowsCreatedBeforeSecond(int second);
-
-		void AddShows(IList<Show> shows);
 	}
 }
