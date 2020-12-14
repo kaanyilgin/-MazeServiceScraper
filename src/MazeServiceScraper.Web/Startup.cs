@@ -44,6 +44,8 @@ namespace MazeServiceScraper.Web
 				));
 			services.AddScoped<IShowApplication>(provider =>
 				new PaginatedShowApplication(provider.GetRequiredService<CachedShowApplication>()));
+
+			services.AddSwaggerGen();
 		}
 
 		// This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -60,6 +62,12 @@ namespace MazeServiceScraper.Web
 
 			app.UseHttpsRedirection();
 			app.UseMvc();
+			app.UseSwagger();
+
+			app.UseSwaggerUI(c =>
+			{
+				c.SwaggerEndpoint("/swagger/v1/swagger.json", "My API V1");
+			});
 		}
 	}
 }
