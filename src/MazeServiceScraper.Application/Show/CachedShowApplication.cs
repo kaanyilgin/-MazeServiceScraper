@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using MazeServiceScraper.Application.Show.Model;
 using MazeServiceScraper.Config;
 using MazeServiceScraper.Infrastructure.Database;
 using Microsoft.Extensions.Options;
@@ -22,18 +23,21 @@ namespace MazeServiceScraper.Application.Show
 			_decorated = decorated;
 		}
 
-		public async Task<IList<Domain.ShowDomain.Show>> GetShowAsync()
+		public async Task<IList<Domain.ShowDomain.Show>> GetShowAsync(GetShowRequest getShowRequest)
 		{
+			IList<Domain.ShowDomain.Show> shows;
+
 			var cachedShows = GetCachedShowsIfThereIsAny();
 
 			if (cachedShows.Count > 0)
 			{
-				return cachedShows;
+				shows = cachedShows;
 			}
-
-			var shows = await this._decorated.GetShowAsync();
-
-			InsertShowsIntoRepository(shows);
+			else
+			{
+				shows = await this._decorated.GetShowAsync(getShowRequest);
+				InsertShowsIntoRepository(shows);
+			}
 
 			return shows;
 		}

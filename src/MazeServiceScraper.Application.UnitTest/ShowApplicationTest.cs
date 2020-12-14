@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using MazeServiceScraper.Application.Show;
+using MazeServiceScraper.Application.Show.Model;
 using MazeServiceScraper.Config;
 using MazeServiceScraper.Infrastructure.Database;
 using MazeServiceScraper.Infrastructure.MazeWebService;
@@ -22,25 +23,25 @@ namespace MazeServiceScraper.Application.UnitTest
 	{
 		private ShowApplication _sut;
 		private IMazeService _mazeService;
+		private GetShowRequest _getShowRequest;
 
 		[SetUp]
 		public void SetUp()
 		{
 			_mazeService = Substitute.For<IMazeService>();
 			_sut = new ShowApplication(_mazeService);
+			_getShowRequest = new GetShowRequest();
 		}
 
 		[Test]
-		public async Task TestCastsOfShowOrderedByBirthday()
+		public async Task TestServiceDataMapToDomainModel()
 		{
 			MockGetShowsAsync();
 			MockGetCasOfShowAsync();
 
-			IList<Domain.ShowDomain.Show> shows = await _sut.GetShowAsync();
+			IList<Domain.ShowDomain.Show> shows = await _sut.GetShowAsync(_getShowRequest);
 
 			Assert.That(shows, Is.Not.Null);
-			var casts = shows[0].Casts;
-			Assert.That(casts.First().Id, Is.EqualTo(7), "Casts are not ordered by birthday");
 		}
 
 		private void MockGetCasOfShowAsync(bool changeId = false)
@@ -92,7 +93,7 @@ namespace MazeServiceScraper.Application.UnitTest
 				new Infrastructure.MazeWebService.Show()
 				{
 					id = 4,
-					name = "Big Bang Theort"
+					name = "Big Bang Theory"
 				}
 			});
 		}
@@ -106,33 +107,35 @@ namespace MazeServiceScraper.Application.UnitTest
 		private IShowRepository _showRepository;
 		private List<Domain.ShowDomain.Show> _decoratedShows;
 		private IOptions<MazeCacheConfig> _mazeCacheConfig;
+		private GetShowRequest _getShowRequest;
 
 		[SetUp]
 		public void SetUp()
 		{
 			_mazeCacheConfig = Substitute.For<IOptions<MazeCacheConfig>>();
-			_mazeCacheConfig.Value.Returns(new MazeCacheConfig() {DbCacheSecond = 60});
+			_mazeCacheConfig.Value.Returns(new MazeCacheConfig() { DbCacheSecond = 60 });
 			_showRepository = Substitute.For<IShowRepository>();
 			_decorated = Substitute.For<IShowApplication>();
 			_sut = new CachedShowApplication(_showRepository, _mazeCacheConfig, _decorated);
-			
+
 			_decoratedShows = new List<Domain.ShowDomain.Show>();
-			_decorated.GetShowAsync().Returns(_decoratedShows);
+			_getShowRequest = new GetShowRequest();
+			_decorated.GetShowAsync(_getShowRequest).Returns(_decoratedShows);
 		}
 
 		[Test]
 		public async Task TestDataPersisInDb()
 		{
 			_decoratedShows.Add(new Domain.ShowDomain.Show(1, "Tv show", new List<Domain.ShowDomain.Cast>()));
-			
-			await _sut.GetShowAsync();
+
+			await _sut.GetShowAsync(_getShowRequest);
 
 			_showRepository.Received(1).AddShows(Arg.Any<IList<Infrastructure.Database.Show>>());
 		}
 
 		private void MockDecoratedGetShowAsync()
 		{
-			_decorated.GetShowAsync().Returns(_decoratedShows);
+			_decorated.GetShowAsync(new GetShowRequest()).Returns(_decoratedShows);
 		}
 
 		[Test]
@@ -148,13 +151,55 @@ namespace MazeServiceScraper.Application.UnitTest
 						Name = "The good show",
 						Casts = new List<Infrastructure.Database.Cast>()
 					}
-				}); 
+				});
 			_decoratedShows.Add(new Domain.ShowDomain.Show(2, "Tv show", new List<Domain.ShowDomain.Cast>()));
 
 			// Get value from cache
-			var showAndCastDetails = await _sut.GetShowAsync();
+			var showAndCastDetails = await _sut.GetShowAsync(_getShowRequest);
 
 			Assert.That(showAndCastDetails.FirstOrDefault().Id, Is.EqualTo(1), "Value is not retrieved from cache");
+		}
+	}
+
+	[TestFixture]
+	public class PaginatedShowApplicationTest
+	{
+		private PaginatedShowApplication _sut;
+		private IShowApplication _decorated;
+
+		[SetUp]
+		public void SetUp()
+		{
+			_decorated = Substitute.For<IShowApplication>();
+			_sut = new PaginatedShowApplication(_decorated);
+		}
+
+		[Test]
+		public async Task TestGetShowAsyncShouldPaginatedAndOrderedByBirthday()
+		{
+			var getShowRequest = new GetShowRequest()
+			{
+				PageNumber = 1,
+				PageSize = 10
+			};
+
+			var response = new List<Domain.ShowDomain.Show>();
+			for (int i = 0; i < 20; i++)
+			{
+				response.Add(new Domain.ShowDomain.Show(i, $"Show: {i}", new List<Domain.ShowDomain.Cast>()
+				{
+					new Domain.ShowDomain.Cast(1, "Older Cast", new DateTime(1970,12,12)),
+					new Domain.ShowDomain.Cast(2, "Younger Cast", new DateTime(2000,12,12))
+				}));
+			}
+
+			_decorated.GetShowAsync(getShowRequest).Returns(response);
+
+			var shows = await _sut.GetShowAsync(getShowRequest);
+			var firstShowsCast = shows.FirstOrDefault().Casts.FirstOrDefault();
+
+			Assert.That(shows, Has.Count.EqualTo(10));
+			Assert.That(firstShowsCast.Id, Is.EqualTo(2), "Cast is not ordered by birthday");
 		}
 	}
 }

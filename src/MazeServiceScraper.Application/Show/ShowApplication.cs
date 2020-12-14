@@ -2,12 +2,8 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using MazeServiceScraper.Config;
-using MazeServiceScraper.Infrastructure.Database;
+using MazeServiceScraper.Application.Show.Model;
 using MazeServiceScraper.Infrastructure.MazeWebService;
-using Microsoft.EntityFrameworkCore.Internal;
-using Microsoft.Extensions.Options;
-using Cast = MazeServiceScraper.Infrastructure.Database.Cast;
 
 namespace MazeServiceScraper.Application.Show
 {
@@ -20,7 +16,7 @@ namespace MazeServiceScraper.Application.Show
 			_mazeService = mazeService;
 		}
 
-		public async Task<IList<Domain.ShowDomain.Show>> GetShowAsync()
+		public async Task<IList<Domain.ShowDomain.Show>> GetShowAsync(GetShowRequest getShowRequest)
 		{
 			var shows = await _mazeService.GetShowsAsync();
 			var domainShows = new List<Domain.ShowDomain.Show>();
@@ -35,8 +31,7 @@ namespace MazeServiceScraper.Application.Show
 							: DateTime.MinValue;
 						return new MazeServiceScraper.Domain.ShowDomain.Cast(x.person.id, x.person.name, birthday);
 					}).ToList();
-				var orderedCasts = domainCasts.OrderByDescending(x => x.Birthday).ToList();
-				var domainShow = new Domain.ShowDomain.Show(show.id, show.name, orderedCasts);
+				var domainShow = new Domain.ShowDomain.Show(show.id, show.name, domainCasts);
 				domainShows.Add(domainShow);
 			}
 

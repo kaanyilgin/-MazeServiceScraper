@@ -4,6 +4,7 @@ using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
 using MazeServiceScraper.Application.Show;
+using MazeServiceScraper.Application.Show.Model;
 using MazeServiceScraper.Config;
 using MazeServiceScraper.Infrastructure.Database;
 using MazeServiceScraper.Infrastructure.MazeWebService;
@@ -30,7 +31,7 @@ namespace MazeServiceScraper.Application.IntegrationTest
 		[Test]
 		public async Task TestGetAllCastsAndPersistInDb()
 		{
-			var showAndCastDetails = await _sut.GetShowAsync();
+			var showAndCastDetails = await _sut.GetShowAsync(new GetShowRequest());
 
 			Assert.That(showAndCastDetails, Is.Not.Null);
 		}
@@ -53,7 +54,8 @@ namespace MazeServiceScraper.Application.IntegrationTest
 		[Test]
 		public async Task TestDataPersisInDb()
 		{
-			var showAndCastDetails = await _sut.GetShowAsync();
+			var getShowRequest = new GetShowRequest();
+			var showAndCastDetails = await _sut.GetShowAsync(getShowRequest);
 
 			var dbShowCount = _mazeDbContext.Shows.Count();
 
@@ -72,7 +74,7 @@ namespace MazeServiceScraper.Application.IntegrationTest
 
 			// Check if values are not inserted in db again
 
-			showAndCastDetails = await _sut.GetShowAsync();
+			showAndCastDetails = await _sut.GetShowAsync(getShowRequest);
 
 			Assert.That(showAndCastDetails.Count, Is.EqualTo(dbShowCount));
 			Assert.That(serviceCastCount, Is.EqualTo(_mazeDbContext.Casts.Count()));

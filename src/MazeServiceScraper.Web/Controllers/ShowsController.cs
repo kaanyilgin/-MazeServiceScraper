@@ -1,7 +1,9 @@
 ﻿using System.Collections.Generic;
 using System.Threading.Tasks;
 using MazeServiceScraper.Application.Show;
+using MazeServiceScraper.Application.Show.Model;
 using MazeServiceScraper.Domain.ShowDomain;
+using MazeServiceScraper.Web.Model;
 using Microsoft.AspNetCore.Mvc;
 
 namespace MazeServiceScraper.Web.Controllers
@@ -18,9 +20,9 @@ namespace MazeServiceScraper.Web.Controllers
 
 		// GET api/values
 		[HttpGet]
-		public async Task<IList<Show>> Get()
+		public async Task<IList<Show>> Get([FromQuery] GetShowRequest request)
 		{
-			return await _showApplication.GetShowAsync();
-		}
+			return await _showApplication.GetShowAsync(request);
 	}
+}
 }
